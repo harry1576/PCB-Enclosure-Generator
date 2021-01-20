@@ -1,4 +1,4 @@
 # PCB-Enclosure-Generator
-Take PCB dimensions then generates a 3D case.
-<br>
-This can then be 3D printed.
+A OpenSCAD file that generates 3D printable boxes for PCBs.
+The user inputs the dimensions of the PCB and a fitted <br>
+case will be created.
