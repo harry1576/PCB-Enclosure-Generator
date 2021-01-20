@@ -1,134 +1,124 @@
+/*
+  _   _  _    _              __                              
+ |_) /  |_)  /   _.  _  _   /__  _  ._   _  ._ _. _|_  _  ._ 
+ |   \_ |_)  \_ (_| _> (/_  \_| (/_ | | (/_ | (_|  |_ (_) |  
+ 
+ Author: Harry Dobbs
+ Description: A program used to generate 3D printable boxes for PCBs.
+*/
+
+
+//PARAMETERS
 $fn=100;
 
-CASE_FASTENER_BOSS_RADIUS = 3; //M3 -
+
+CASE_FASTENER_BOSS_RADIUS = 4.5; //M3 - technically should be 4.5mm
 CASE_FASTENER_INTERNAL_RADIUS = 1.5-(0.25/2); //M3 -> enough for self tapping
 CASE_FASTENER_DEPTH = 12;
 
 LID_FASTENER_RADIUS = 1.5;
 
-pcbX = 37.25 + CASE_FASTENER_BOSS_RADIUS/2;
-pcbZ = 20.20 + CASE_FASTENER_BOSS_RADIUS/2;
-pcbY = 20;
+PCB_X = 37.25 + CASE_FASTENER_BOSS_RADIUS/2;
+PCB_Z = 20.20 + CASE_FASTENER_BOSS_RADIUS/2;
+PCB_Y = 20;
 
 WALL_THICKNESS = 5; // 2mm minimum is recommended
-radius = 5;
+EDGE_RADIUS = 5;
 
-pcbOffsetx = pcbX;
-pcbOffsetz = 5;
-pcbOffsety = 2;
+STAND_OFF_X = PCB_X;
+STAND_OFF_Z = 5;
+STAND_OFF_Y = 2;
 
 FASTENER_HEAD_RADIUS = 2.8;
+FASTENER_HEAD_DEPTH = 3;
 
 
-//Floor plane...
-difference(){
-translate([0,0,+WALL_THICKNESS/2]){
-    minkowski()
-    {
+module lid(){
+    // Difference between a cube and the mounting holes...
+    difference(){
+        translate([0,0,+WALL_THICKNESS/2]){
+            minkowski(){
+                    cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,WALL_THICKNESS],center=true);
+                    cylinder(h=0.000000000000001,r=EDGE_RADIUS);
+            }
+        }
 
-            cube([pcbX+(WALL_THICKNESS*2)-radius,pcbZ+(WALL_THICKNESS*2)-radius,WALL_THICKNESS],center=true);
-            cylinder(h=0.000000000000001,r=radius);
-    }
-}
-
-union(){
-    translate([pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2,pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2, WALL_THICKNESS/2])
-    {
-        cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
-        translate([0,0, 1.5])
-        {
-            cylinder(h=3, r=FASTENER_HEAD_RADIUS, center=true);
+        union(){
+            translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2, WALL_THICKNESS/2]){
+                cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
+                translate([0,0, 1.5]){
+                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                }
+            }
+            translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),WALL_THICKNESS/2]){
+                cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
+                translate([0,0, 1.5]){
+                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                }
+            }
+            translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),WALL_THICKNESS/2]){
+                cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
+                translate([0,0, 1.5]){
+                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                }    
+            }
+            translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2,WALL_THICKNESS / 2]){
+                cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
+                translate([0,0, 1.5]){
+                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                }    
+            }
         }
     }
-    translate([pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2,-(pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2),WALL_THICKNESS/2])
-    {
-        cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
-        translate([0,0, 1.5])
-        {
-            cylinder(h=3, r=FASTENER_HEAD_RADIUS, center=true);
-        }
-    }
-    translate([-(pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2),-(pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2),WALL_THICKNESS/2])
-    {
-        cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
-        translate([0,0, 1.5])
-        {
-            cylinder(h=3, r=FASTENER_HEAD_RADIUS, center=true);
-        }    }
-    translate([-(pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2),pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2,WALL_THICKNESS / 2])
-    {
-        cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
-        translate([0,0, 1.5])
-        {
-            cylinder(h=3, r=FASTENER_HEAD_RADIUS, center=true);
-        }    }
-}
 }
 
-
-
-
-
-translate([80,0,0]){
-
+module box(){
     // Sides....
     difference(){
-       
-
-        
-        
-        difference() {  
-            
-            translate([0,0,pcbY/2+WALL_THICKNESS])
-            {
-                cube([pcbX+(WALL_THICKNESS*2)-radius,pcbZ+(WALL_THICKNESS*2)-radius,pcbY],center = true);
-
+        difference() {
+            // External Cube
+            translate([0,0,PCB_Y/2+WALL_THICKNESS]){
+                cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Y],center = true);
                 minkowski()
                 {
-
-                        cube([pcbX+(WALL_THICKNESS*2)-radius,pcbZ+(WALL_THICKNESS*2)-radius,pcbY],center = true);
-                        cylinder(h=0.000000000000001,r=radius);
+                        cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Y],center = true);
+                        cylinder(h=0.000000000000001,r=EDGE_RADIUS);
                 }
             }
          
             // Internal Cube 
-            translate([0,0,pcbY/2+WALL_THICKNESS])
-            {
+            translate([0,0,PCB_Y/2+WALL_THICKNESS]){
                 minkowski()
                 {
-                  
-                      cube([pcbX,pcbZ,pcbY+0.01], center = true);
+                      cube([PCB_X,PCB_Z,PCB_Y+0.01], center = true);
                       cylinder(h=0.000000000000001,r=1);
                 }
             }
 
         }
         
-        union()
-        {
-            translate([pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2,pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2,pcbY/2 + WALL_THICKNESS])
+        union() {
+            translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Y/2 + WALL_THICKNESS])
             {
                 
-                cylinder(h=pcbY + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+                cylinder(h=PCB_Y + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
             }
-            translate([pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2,-(pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2),pcbY/2 + WALL_THICKNESS])
+            translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Y/2 + WALL_THICKNESS])
             {
                 
-                cylinder(h=pcbY + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
-            }
-            
-            translate([-(pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2),-(pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2),pcbY/2 + WALL_THICKNESS])
-            {
-                
-                cylinder(h=pcbY + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
-            }
-                 translate([-(pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2),(pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2),pcbY/2 + WALL_THICKNESS])
-            {
-                
-                cylinder(h=pcbY + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+                cylinder(h=PCB_Y + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
             }
             
-
+            translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Y/2 + WALL_THICKNESS])
+            {
+                
+                cylinder(h=PCB_Y + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+            }
+                 translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Y/2 + WALL_THICKNESS])
+            {
+                
+                cylinder(h=PCB_Y + 0.01, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+            }
         }
 
     }
@@ -139,63 +129,63 @@ translate([80,0,0]){
         minkowski()
         {
 
-                cube([pcbX+(WALL_THICKNESS*2)-radius,pcbZ+(WALL_THICKNESS*2)-radius,WALL_THICKNESS],center=true);
-                cylinder(h=0.000000000000001,r=radius);
+                cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,WALL_THICKNESS],center=true);
+                cylinder(h=0.000000000000001,r=EDGE_RADIUS);
         }
     }
 
 
 
-    // PCB offsets
-    translate([0,pcbZ/2-pcbOffsetz/2 + CASE_FASTENER_BOSS_RADIUS/2,pcbOffsety/2+WALL_THICKNESS])
+    // PCB Stand offs
+    translate([0,PCB_Z/2-STAND_OFF_Z/2 + CASE_FASTENER_BOSS_RADIUS/2,STAND_OFF_Y/2+WALL_THICKNESS])
     {
-        cube([pcbOffsetx + CASE_FASTENER_INTERNAL_RADIUS/2,pcbOffsetz,pcbOffsety],center=true);
+        cube([STAND_OFF_X + CASE_FASTENER_INTERNAL_RADIUS/2,STAND_OFF_Z,STAND_OFF_Y],center=true);
     }
 
 
-    // PCB offsets
-    translate([0,-pcbZ/2+pcbOffsetz/2 - CASE_FASTENER_BOSS_RADIUS/2,pcbOffsety/2+WALL_THICKNESS])
+    // PCB Stand offs
+    translate([0,-PCB_Z/2+STAND_OFF_Z/2 - CASE_FASTENER_BOSS_RADIUS/2,STAND_OFF_Y/2+WALL_THICKNESS])
     {
-        cube([pcbOffsetx + CASE_FASTENER_INTERNAL_RADIUS/2,pcbOffsetz,pcbOffsety],center=true);
+        cube([STAND_OFF_X + CASE_FASTENER_INTERNAL_RADIUS/2,STAND_OFF_Z,STAND_OFF_Y],center=true);
     }
 
 
 
-    translate([pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2,pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2,pcbY/2 + WALL_THICKNESS/2])
+    translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Y/2 + WALL_THICKNESS/2])
     {
         difference() {
-            cylinder(h=pcbY + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
-            translate([0,0,pcbY/2+ CASE_FASTENER_DEPTH/2]){
+            cylinder(h=PCB_Y + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            translate([0,0,PCB_Y/2+ CASE_FASTENER_DEPTH/2]){
                 cylinder(h=CASE_FASTENER_DEPTH * 2, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
             }
         }
 
     }
-    translate([pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2,-(pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2),pcbY/2 + WALL_THICKNESS/2])
+    translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Y/2 + WALL_THICKNESS/2])
     {
         difference() {
-            cylinder(h=pcbY + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
-            translate([0,0,pcbY/2 + CASE_FASTENER_DEPTH/2]){
+            cylinder(h=PCB_Y + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            translate([0,0,PCB_Y/2 + CASE_FASTENER_DEPTH/2]){
                 cylinder(h=CASE_FASTENER_DEPTH * 2, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
             }
         }
 
     }
-    translate([-(pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2),-(pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2),pcbY/2 + WALL_THICKNESS/2])
+    translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Y/2 + WALL_THICKNESS/2])
     {
         difference() {
-            cylinder(h=pcbY + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
-            translate([0,0,pcbY/2 + CASE_FASTENER_DEPTH/2]){
+            cylinder(h=PCB_Y + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            translate([0,0,PCB_Y/2 + CASE_FASTENER_DEPTH/2]){
                 cylinder(h=CASE_FASTENER_DEPTH * 2, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
             }
         }
 
     }
-    translate([-(pcbX/2 + CASE_FASTENER_BOSS_RADIUS/2),pcbZ/2 + CASE_FASTENER_BOSS_RADIUS/2,pcbY/2 + WALL_THICKNESS / 2])
+    translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Y/2 + WALL_THICKNESS / 2])
     {
         difference() {
-            cylinder(h=pcbY + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
-            translate([0,0,pcbY/2 + CASE_FASTENER_DEPTH/2]){
+            cylinder(h=PCB_Y + WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            translate([0,0,PCB_Y/2 + CASE_FASTENER_DEPTH/2]){
                 cylinder(h=CASE_FASTENER_DEPTH * 2, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
             }
         }
@@ -203,4 +193,8 @@ translate([80,0,0]){
 }
 
 
+
+
+translate([PCB_X + WALL_THICKNESS + 20,0,0]){lid();}
+box();
 
