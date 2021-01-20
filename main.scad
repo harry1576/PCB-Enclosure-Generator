@@ -32,6 +32,8 @@ STAND_OFF_Y = 2;
 FASTENER_HEAD_RADIUS = 2.8;
 FASTENER_HEAD_DEPTH = 3;
 
+CASE_INSERT_DEPTH = 3;
+
 
 module lid(){
     // Difference between a cube and the mounting holes...
@@ -70,6 +72,33 @@ module lid(){
             }
         }
     }
+    difference(){
+            translate([0,0,-CASE_INSERT_DEPTH/2]){
+
+            cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,CASE_INSERT_DEPTH-0.001],center=true); 
+            }
+            union(){
+                translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),-CASE_INSERT_DEPTH/2]){
+                    cylinder(h=CASE_INSERT_DEPTH+0.001, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+                    }
+                translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),-CASE_INSERT_DEPTH/2]){
+                    cylinder(h=CASE_INSERT_DEPTH+0.001, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+                    }
+
+                translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),-CASE_INSERT_DEPTH/2]){
+                    cylinder(h=CASE_INSERT_DEPTH+0.001, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+                    }
+
+                translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),-CASE_INSERT_DEPTH/2]){
+                    cylinder(h=CASE_INSERT_DEPTH+0.001, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+                    }
+                }
+                
+                
+                
+
+
+        }
 }
 
 module box(){
@@ -195,6 +224,6 @@ module box(){
 
 
 
-translate([PCB_X + WALL_THICKNESS + 20,0,0]){lid();}
+translate([PCB_X + WALL_THICKNESS + 20,0,WALL_THICKNESS])rotate([180,0,0]){{lid();}}
 box();
 
