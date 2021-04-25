@@ -12,38 +12,79 @@
 $fn=100;
 
 
-CASE_FASTENER_BOSS_RADIUS = 4.5; //M3 - technically should be 4.5mm
-CASE_FASTENER_INTERNAL_RADIUS = 1.5-(0.25/2); //M3 -> enough for self tapping
+CASE_FASTENER_BOSS_RADIUS = 5; 
+CASE_FASTENER_INTERNAL_RADIUS = 3.3/2; // 3.3mm hole recommended
 CASE_FASTENER_DEPTH = 12;
 
-LID_FASTENER_RADIUS = 1.5;
+LID_FASTENER_RADIUS = 2.02; // 2mm and a bit of tolerance...
 
-PCB_X = 37.25 + CASE_FASTENER_BOSS_RADIUS/2;
-PCB_Z = 20.20 + CASE_FASTENER_BOSS_RADIUS/2;
-PCB_Y = 20;
+//PCB_X = 37.25 + CASE_FASTENER_BOSS_RADIUS/2;
+//PCB_Z = 20.20 + CASE_FASTENER_BOSS_RADIUS/2;
+//PCB_Y = 20;
 
-WALL_THICKNESS = 5; // 2mm minimum is recommended
-EDGE_RADIUS = 5;
+PCB_X = 10 + CASE_FASTENER_BOSS_RADIUS/2;
+PCB_Z = 10 + CASE_FASTENER_BOSS_RADIUS/2;
+PCB_Y = 10;
+
+WALL_THICKNESS = 3; // 2mm minimum is recommended
+EDGE_RADIUS = 7;
 
 STAND_OFF_X = PCB_X;
 STAND_OFF_Z = 5;
 STAND_OFF_Y = 2;
 
-FASTENER_HEAD_RADIUS = 2.8;
-FASTENER_HEAD_DEPTH = 3;
-
-CASE_INSERT_DEPTH = 3;
+FASTENER_HEAD_RADIUS = 4;
+FASTENER_HEAD_DEPTH = 2;
+CASE_INSERT_DEPTH = 1.5;
 
 
 module lid(){
     // Difference between a cube and the mounting holes...
     difference(){
+        union(){
         translate([0,0,+WALL_THICKNESS/2]){
             minkowski(){
-                    cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,WALL_THICKNESS],center=true);
+                    cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,WALL_THICKNESS],center=true);            
                     cylinder(h=0.000000000000001,r=EDGE_RADIUS);
             }
+            
         }
+            translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),+WALL_THICKNESS/2])
+    {
+        difference() {
+            cylinder(h=WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            cylinder(h=WALL_THICKNESS * 2, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+            
+        }
+    }
+    translate([(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),+WALL_THICKNESS/2])
+    {
+        difference() {
+            cylinder(h=WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            cylinder(h=WALL_THICKNESS * 2, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+            
+        }
+
+    }
+    translate([(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),+WALL_THICKNESS/2])
+    {
+        difference() {
+            cylinder(h=WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            cylinder(h=WALL_THICKNESS * 2, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+            
+        }
+
+    }
+    translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),+WALL_THICKNESS/2])
+    {
+        difference() {
+            cylinder(h=WALL_THICKNESS - 0.01, r=CASE_FASTENER_BOSS_RADIUS, center=true);
+            cylinder(h=WALL_THICKNESS, r=CASE_FASTENER_INTERNAL_RADIUS, center=true);
+            
+        }
+    }
+        
+    }
 
         union(){
             translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2, WALL_THICKNESS/2]){
@@ -72,10 +113,11 @@ module lid(){
             }
         }
     }
+    
     difference(){
             translate([0,0,-CASE_INSERT_DEPTH/2]){
 
-            cube([PCB_X+(WALL_THICKNESS*2)-EDGE_RADIUS,PCB_Z+(WALL_THICKNESS*2)-EDGE_RADIUS,CASE_INSERT_DEPTH-0.001],center=true); 
+            cube([PCB_X,PCB_Z,CASE_INSERT_DEPTH-0.001],center=true); 
             }
             union(){
                 translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),-CASE_INSERT_DEPTH/2]){
@@ -93,12 +135,9 @@ module lid(){
                     cylinder(h=CASE_INSERT_DEPTH+0.001, r=CASE_FASTENER_BOSS_RADIUS, center=true);
                     }
                 }
-                
-                
-                
+    }
+    
 
-
-        }
 }
 
 module box(){
@@ -226,4 +265,4 @@ module box(){
 
 translate([PCB_X + WALL_THICKNESS + 20,0,WALL_THICKNESS])rotate([180,0,0]){{lid();}}
 box();
-
+//translate([0,0,WALL_THICKNESS]){rotate([180,0,0]){lid();}};
