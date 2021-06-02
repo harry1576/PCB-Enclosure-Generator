@@ -1,6 +1,9 @@
 # PCB-Enclosure-Generator
-A OpenSCAD file that generates 3D printable boxes for PCBs.
-The user inputs the dimensions of the PCB and a fitted <br>
-case will be created.
+This script has been created to generate 3D printable PCB housings.
+The script will produce a box and a lid, after the user has input the
+PCB dimensions and fastener dimenions.
 
-> Testing
+# Examples
+Here are some example outputs of a big and small housing.
+![Example big box](/images/big_box.png)
+![Example small box](/images/small_box.png)
