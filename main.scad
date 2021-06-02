@@ -11,16 +11,11 @@
 //PARAMETERS
 $fn=100;
 
-
 CASE_FASTENER_BOSS_RADIUS = 6; 
 CASE_FASTENER_INTERNAL_RADIUS = 3.3/2; // 3.3mm hole recommended
 CASE_FASTENER_DEPTH = 12;
 
 LID_FASTENER_RADIUS = 2.02; // 2mm and a bit of tolerance...
-
-//PCB_X = 37.25 + CASE_FASTENER_BOSS_RADIUS/2;
-//PCB_Z = 20.20 + CASE_FASTENER_BOSS_RADIUS/2;
-//PCB_Y = 20;
 
 PCB_X = 50 + CASE_FASTENER_BOSS_RADIUS/2;
 PCB_Z = 75 + CASE_FASTENER_BOSS_RADIUS/2;
@@ -30,8 +25,8 @@ WALL_THICKNESS = 5; // 2mm minimum is recommended
 EDGE_RADIUS = 8;
 
 STAND_OFF_X = PCB_X;
-STAND_OFF_Z = 5;
-STAND_OFF_Y = 0;
+STAND_OFF_Z = 10;
+STAND_OFF_Y = 2;
 
 FASTENER_HEAD_RADIUS = 4;
 FASTENER_HEAD_DEPTH = 2;
@@ -90,25 +85,25 @@ module lid(){
             translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2, WALL_THICKNESS/2]){
                 cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
                 translate([0,0, 1.5]){
-                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                    cylinder(h=FASTENER_HEAD_DEPTH+0.01, r=FASTENER_HEAD_RADIUS, center=true);
                 }
             }
             translate([PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2,-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),WALL_THICKNESS/2]){
                 cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
                 translate([0,0, 1.5]){
-                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                    cylinder(h=FASTENER_HEAD_DEPTH+0.01, r=FASTENER_HEAD_RADIUS, center=true);
                 }
             }
             translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),-(PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2),WALL_THICKNESS/2]){
                 cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
                 translate([0,0, 1.5]){
-                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                    cylinder(h=FASTENER_HEAD_DEPTH+0.01, r=FASTENER_HEAD_RADIUS, center=true);
                 }    
             }
             translate([-(PCB_X/2 + CASE_FASTENER_BOSS_RADIUS/2),PCB_Z/2 + CASE_FASTENER_BOSS_RADIUS/2,WALL_THICKNESS / 2]){
                 cylinder(h=WALL_THICKNESS+0.1, r=LID_FASTENER_RADIUS, center=true);
                 translate([0,0, 1.5]){
-                    cylinder(h=FASTENER_HEAD_DEPTH, r=FASTENER_HEAD_RADIUS, center=true);
+                    cylinder(h=FASTENER_HEAD_DEPTH+0.01, r=FASTENER_HEAD_RADIUS, center=true);
                 }    
             }
         }
@@ -264,14 +259,4 @@ module box(){
 
 
 translate([PCB_X + WALL_THICKNESS + 20,0,WALL_THICKNESS])rotate([180,0,0]){{lid();}}
-difference(){box();union(){
-    
-    
-    rotate([0,90,90]){translate([-(WALL_THICKNESS+6),16.5,-30]){cylinder(h=50 + WALL_THICKNESS - 0.01, r=5.8, center=true);}}
-    
-    translate([11,-40,(15+ WALL_THICKNESS/2)]){cube([24,20,20],center=true);}
-
-    
-    
-    
-    }}
+box();
